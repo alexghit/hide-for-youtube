@@ -63,10 +63,3 @@ your Chrome profile. Nothing else is stored, and nothing leaves the browser.
 YouTube changes its DOM regularly. When an option stops working, the fix is
 almost always a selector in `extension/content.js` — the `RULES` object maps each
 toggle to the elements it hides.
-
-## Copyright
-
-© 2026 Alex Ghit. All rights reserved.
-
-This source is published so it can be read and verified. It is not licensed for
-reuse, redistribution, or derivative works.
