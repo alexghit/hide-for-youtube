@@ -1,7 +1,10 @@
 # Hide for YouTube
 
-A Chrome extension that hides the parts of YouTube you didn't ask for. Eight
-toggles, no network requests, no tracking, no accounts.
+A Chrome extension that hides the parts of YouTube you didn't ask for.
+
+Eight toggles, no network requests, no tracking, no accounts. YouTube stays
+YouTube — the video plays, search works, subscriptions are there. Everything
+built to pull you somewhere else is gone.
 
 ## What it hides
 
@@ -16,50 +19,39 @@ toggles, no network requests, no tracking, no accounts.
 | Playlists | off |
 | Live chat | off |
 
-The extension injects a stylesheet at `document_start`, so hidden elements never
-paint. There is no JavaScript running against the page after that.
+The first five are the ones almost everyone wants gone, so they ship on. The
+last three are situational — hidden only if you ask.
 
-## Repo layout
+## How it works
+
+A stylesheet is injected at `document_start`, before YouTube paints. Hidden
+elements never appear, so there's no flash of a feed you asked to remove.
+
+That's the whole mechanism. No MutationObserver polling the DOM, no scripts
+racing YouTube's own JavaScript, no per-video work. The toggles map to CSS
+selectors in `extension/content.js` and the browser does the rest.
+
+Settings live in `chrome.storage.sync`, so they follow the Chrome profile across
+devices. The popup writes; the content script listens and reapplies. Nothing
+else is stored, and nothing leaves the browser.
+
+## Structure
 
 ```
-extension/   the unpacked extension — load this in chrome://extensions
-site/        the landing page, deployed to hide.hey5.studio
+extension/   the unpacked extension
+site/        the landing page — hide.hey5.studio
 ```
 
-## Develop
-
-No build step. No dependencies.
-
-1. Open `chrome://extensions`
-2. Enable Developer mode
-3. Load unpacked → select `extension/`
-
-Edit a file, hit reload on the extension card.
-
-## Deploy the site
-
-Cloudflare Pages, connected to this repo:
-
-- Build command: *(none)*
-- Build output directory: `site`
-
-## Fonts
-
-The popup names Geist and Geist Mono first, falling back to the system stack.
-To ship the intended type, drop the `.woff2` files into `extension/fonts/`, add
-an `@font-face` block, and link it from `popup.html`. Remote font URLs will not
-work — extension CSP blocks them, and the extension makes no network requests by
-design.
+`popup.html` is the UI: the eight toggles and an on/off switch. `content.js` is
+the mechanism. They only talk through storage.
 
 ## Permissions
 
-`storage` — saves your eight toggles via `chrome.storage.sync`, so they follow
-your Chrome profile. Nothing else is stored, and nothing leaves the browser.
+`storage` for the toggles. `*://*.youtube.com/*` to run there. Nothing else —
+no `tabs`, no `scripting`, no host access beyond YouTube.
 
-`*://*.youtube.com/*` — the content script only runs on YouTube.
+## Maintenance
 
-## A note on selectors
-
-YouTube changes its DOM regularly. When an option stops working, the fix is
-almost always a selector in `extension/content.js` — the `RULES` object maps each
-toggle to the elements it hides.
+YouTube reshapes its DOM regularly. When an option stops working, a selector
+went stale — the `RULES` object in `content.js` maps each toggle to the elements
+it hides, and that's almost always the only place a fix is needed.
