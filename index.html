@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hide for YouTube</title>
+<meta name="description" content="A Chrome extension that hides the parts of YouTube you didn't ask for. Eight toggles, no network, no accounts.">
+<meta name="theme-color" content="#0c0c0e">
+<link rel="canonical" href="https://hide.hey5.studio/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hide.hey5.studio/">
+<meta property="og:image" content="https://hide.hey5.studio/icon128.png">
+<meta name="twitter:card" content="summary">
+<meta property="og:title" content="Hide for YouTube — Chrome extension">
+<meta property="og:description" content="A Chrome extension that hides the parts of YouTube you didn't ask for.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Cpath d='M24 21 L24 43 L44 32 Z' fill='%23fff'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0c0e;--surface:#141416;--surface-2:#1c1c1f;--field-bg:#131315;
+  --line:rgba(255,255,255,.08);--line-strong:rgba(255,255,255,.14);
+  --ink:rgba(255,255,255,.94);--muted:rgba(255,255,255,.5);
+  --faint:rgba(255,255,255,.3);--accent:rgba(255,255,255,.30);
+  --sans:'Geist',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'Geist Mono',ui-monospace,monospace;
+  --serif:'Instrument Serif',Georgia,serif;
+  --ease:cubic-bezier(.22,1,.36,1);--t:200ms;--radius:14px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-height:100svh;display:flex;flex-direction:column;background:var(--bg);
+  color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent}
+::selection{background:var(--accent);color:var(--bg)}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;
+  padding:32px 40px;font-family:var(--mono);font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted)}
+.wordmark{font:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--muted);background:none;border:none;padding:0;cursor:pointer;
+  transition:color var(--t)}
+.wordmark:hover{color:rgba(255,255,255,.85)}
+.topbar-tag{color:var(--faint)}
+
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:48px;padding:80px 24px 48px;text-align:center}
+.cta{display:flex;flex-direction:column;align-items:center;gap:16px}
+
+.btn-primary{cursor:pointer;font-family:var(--mono);font-size:12px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--bg);
+  background:rgba(255,255,255,.94);border:none;border-radius:999px;padding:11px 20px;
+  transition:opacity var(--t),transform 140ms var(--ease),background 140ms;
+  text-decoration:none;display:inline-block}
+.btn-primary:hover{opacity:.85}
+.btn-primary:active{transition:none;transform:scale(.94)}
+.btn-primary:disabled{opacity:.35;pointer-events:none}
+
+
+.hint{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--faint)}
+
+.footer{flex-shrink:0;display:flex;flex-wrap:wrap;justify-content:center;
+  align-items:center;gap:8px;padding:28px 24px 32px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.04em;color:var(--faint);text-align:center}
+.footer a{color:var(--muted);text-decoration:none;
+  border-bottom:1px solid var(--line-strong);
+  transition:color var(--t),border-color var(--t)}
+.footer a:hover{color:rgba(255,255,255,.85);border-bottom-color:rgba(255,255,255,.4)}
+.footer .dot{opacity:.5}
+
+.btn-primary:focus-visible,
+.footer a:focus-visible,.wordmark:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{display:flex;flex-direction:column;align-items:center;gap:20px;max-width:640px}
+.hero h1{font-family:var(--serif);font-size:72px;font-weight:400;line-height:1.08;
+  letter-spacing:-.005em}
+.hero p{font-size:15px;line-height:1.6;color:var(--muted);max-width:34ch}
+
+.demo{display:flex;flex-direction:column;gap:12px;align-items:center}
+.popup{width:340px;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--surface);overflow:hidden;text-align:left}
+.popup-bar{display:flex;align-items:center;padding:20px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.popup-body{padding:0 20px 20px;display:flex;flex-direction:column;gap:20px;
+  align-items:center}
+.segs{display:inline-flex;gap:4px;background:rgba(255,255,255,.05);
+  border:1px solid var(--line);border-radius:999px;padding:4px}
+.segs button{cursor:pointer;font-family:var(--mono);font-size:11px;
+  letter-spacing:.04em;white-space:nowrap;border:none;border-radius:999px;
+  padding:8px 14px;background:transparent;color:var(--muted);
+  transition:background 220ms,color 220ms,transform 140ms var(--ease)}
+.segs button:hover{color:rgba(255,255,255,.85)}
+.segs button:active{transition:none;transform:scale(.94)}
+.segs button[aria-pressed="true"]{background:rgba(255,255,255,.92);color:var(--bg)}
+.segs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.rule{height:1px;background:var(--line);width:100%}
+.opts{width:100%;display:flex;flex-direction:column;gap:4px;transition:opacity var(--t)}
+.opts[data-off]{opacity:.35;pointer-events:none}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  width:100%;cursor:pointer;background:transparent;border:none;border-radius:10px;
+  padding:8px 12px;font-family:var(--mono);font-size:12px;letter-spacing:.04em;
+  color:var(--muted);text-align:left;transition:background var(--t),color var(--t)}
+.opt:hover{background:rgba(255,255,255,.04);color:rgba(255,255,255,.85)}
+.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt[aria-pressed="true"]{color:var(--ink)}
+.box{flex-shrink:0;width:14px;height:14px;border-radius:4px;
+  border:1px solid var(--line-strong);position:relative;transition:background var(--t)}
+.opt[aria-pressed="true"] .box{background:rgba(255,255,255,.92);border-color:transparent}
+.opt[aria-pressed="true"] .box::after{content:"";position:absolute;inset:0;
+  background:var(--bg);clip-path:polygon(18% 48%,40% 70%,84% 24%,84% 40%,40% 84%,18% 62%)}
+
+.facts{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:560px}
+.fact{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--faint);
+  border:1px solid var(--line);border-radius:999px;padding:7px 14px}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:660px;
+  width:100%;text-align:left;padding-top:24px}
+.col{display:flex;flex-direction:column;gap:12px}
+.col h2{font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);font-weight:400}
+.col p{font-size:14px;line-height:1.65;color:var(--faint)}
+.ask{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--faint)}
+.ask a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line-strong)}
+.ask a:hover{color:rgba(255,255,255,.85)}
+.privacy{max-width:560px;display:flex;flex-direction:column;gap:14px;
+  text-align:center;align-items:center;padding-top:40px;
+  border-top:1px solid var(--line);width:100%}
+.privacy h2{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted);font-weight:400}
+.privacy p{font-size:14px;line-height:1.65;color:var(--faint);max-width:52ch}
+
+@media (max-width:600px){
+  .topbar{padding:24px 20px;font-size:11px}
+  .hero h1{font-size:40px}
+  .cols{grid-template-columns:1fr;gap:28px}
+  .stage{padding:48px 24px 40px;gap:40px}
+  .popup{width:100%;max-width:320px}
+  .footer{flex-direction:column;gap:14px;padding:24px 20px 30px;line-height:1.5}
+  .footer .dot{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="wordmark">Hide for YouTube</span>
+  <span class="topbar-tag">chrome extension</span>
+</header>
+
+<main class="stage">
+
+  <section class="hero">
+    <h1>Just the video,<br>nothing else.</h1>
+    <p>Hide the feed, Shorts, suggestions and comments. No account, no tracking, no network.</p>
+  </section>
+
+  <section class="demo">
+    <div class="popup">
+      <div class="popup-bar">Hide for YouTube</div>
+      <div class="popup-body">
+        <div class="segs" role="group" aria-label="Extension state" id="power">
+          <button type="button" data-on="true" aria-pressed="true">On</button>
+          <button type="button" data-on="false" aria-pressed="false">Off</button>
+        </div>
+        <div class="rule"></div>
+        <div class="opts" id="opts">
+          <button class="opt" type="button" data-k="feed" aria-pressed="true"><span>Hide homepage feed</span><span class="box"></span></button>
+          <button class="opt" type="button" data-k="shorts" aria-pressed="true"><span>Hide Shorts</span><span class="box"></span></button>
+          <button class="opt" type="button" data-k="suggestions" aria-pressed="true"><span>Hide suggestions</span><span class="box"></span></button>
+          <button class="opt" type="button" data-k="comments" aria-pressed="true"><span>Hide comments</span><span class="box"></span></button>
+          <button class="opt" type="button" data-k="endscreen" aria-pressed="true"><span>Hide videos at end</span><span class="box"></span></button>
+          <button class="opt" type="button" data-k="subsbar" aria-pressed="false"><span>Hide subscriptions bar</span><span class="box"></span></button>
+          <button class="opt" type="button" data-k="playlists" aria-pressed="false"><span>Hide playlists</span><span class="box"></span></button>
+          <button class="opt" type="button" data-k="chat" aria-pressed="false"><span>Hide live chat</span><span class="box"></span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta">
+    <a class="btn-primary" href="#" id="install">Add to Chrome</a>
+    <p class="hint">Free · Works offline · Nothing leaves your browser</p>
+  </div>
+
+  <section class="cols">
+    <div class="col">
+      <h2>Quiet by default</h2>
+      <p>The feed, Shorts, suggestions and comments are hidden from the first load.</p>
+    </div>
+    <div class="col">
+      <h2>Built for control</h2>
+      <p>Eight toggles. Turn off what you don't want and it stays off, on every device.</p>
+    </div>
+  </section>
+
+  <section class="privacy" id="privacy">
+    <h2>Privacy</h2>
+    <p>Hide for YouTube makes no network requests and collects no data. It saves your toggle preferences in Chrome—nothing else, and nothing that leaves your browser.</p>
+    <p class="ask">Questions: <a href="mailto:alex@hey5.studio">alex@hey5.studio</a></p>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <span>Made with ♥ by Alex Ghit</span><span class="dot">·</span><span>v1.0</span>
+</footer>
+
+<script>
+const DEF = { on: true, feed: true, shorts: true, suggestions: true,
+  comments: true, endscreen: true, subsbar: false, playlists: false, chat: false };
+let state = { ...DEF };
+const opts = document.getElementById('opts');
+const power = document.getElementById('power');
+
+function render() {
+  power.querySelectorAll('button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.on === String(state.on))));
+  opts.toggleAttribute('data-off', !state.on);
+  opts.querySelectorAll('.opt').forEach(b => {
+    b.setAttribute('aria-pressed', String(!!state[b.dataset.k]));
+    b.disabled = !state.on;
+  });
+}
+
+power.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  state.on = b.dataset.on === 'true'; render();
+});
+
+opts.addEventListener('click', e => {
+  const b = e.target.closest('.opt'); if (!b) return;
+  state[b.dataset.k] = !state[b.dataset.k]; render();
+});
+
+render();
+</script>
+</body>
+</html>
