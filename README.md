@@ -55,3 +55,7 @@ no `tabs`, no `scripting`, no host access beyond YouTube.
 YouTube reshapes its DOM regularly. When an option stops working, a selector
 went stale — the `RULES` object in `content.js` maps each toggle to the elements
 it hides, and that's almost always the only place a fix is needed.
+
+## Credits
+
+Made with ♥ by Alex Ghit — <alex@hey5.studio>
