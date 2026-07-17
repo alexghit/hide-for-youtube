@@ -39,8 +39,11 @@ else is stored, and nothing leaves the browser.
 
 ```
 extension/   the unpacked extension
-site/        the landing page — hide.hey5.studio
+site/        the landing page — index.html, plus robots.txt, sitemap.xml
+             and icon128.png, which crawlers and link previews fetch by URL
 ```
+
+`wrangler.jsonc` points Cloudflare's asset root at `site/` and falls back to `index.html` for any unmatched path, so a wrong URL lands on the page rather than a 404.
 
 `popup.html` is the UI: the eight toggles and an on/off switch. `content.js` is
 the mechanism. They only talk through storage.
