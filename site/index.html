@@ -9,6 +9,7 @@
 <link rel="canonical" href="https://hide.hey5.studio/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hide.hey5.studio/">
+<meta property="og:image" content="https://hide.hey5.studio/icon128.png">
 <meta name="twitter:card" content="summary">
 <meta property="og:title" content="Hide for YouTube — Chrome extension">
 <meta property="og:description" content="A Chrome extension that hides the parts of YouTube you didn't ask for.">
@@ -143,7 +144,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 <body>
 
 <header class="topbar">
-  <span class="wordmark">Hide for YouTube</span>
+  <button class="wordmark" id="wordmark" type="button">Hide for YouTube</button>
   <span class="topbar-tag">chrome extension</span>
 </header>
 
@@ -221,6 +222,11 @@ function render() {
     b.disabled = !state.on;
   });
 }
+
+document.getElementById('wordmark').addEventListener('click', () => {
+  state = { ...DEF };
+  render();
+});
 
 power.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
