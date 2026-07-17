@@ -40,7 +40,6 @@ else is stored, and nothing leaves the browser.
 ```
 extension/   the unpacked extension
 site/        the landing page — hide.hey5.studio
-worker.js    serves site/, redirects unknown paths to /
 ```
 
 `popup.html` is the UI: the eight toggles and an on/off switch. `content.js` is
