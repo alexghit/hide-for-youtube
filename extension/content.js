@@ -12,17 +12,14 @@ const RULES = {
     ytd-video-renderer:has(a[href^="/shorts"]),
     ytd-rich-item-renderer:has(a[href^="/shorts"]),
     grid-shelf-view-model:has(a[href^="/shorts"])`,
-  suggestions: `#secondary, #related,
-    ytd-watch-next-secondary-results-renderer,
-    ytd-compact-video-renderer`,
+  suggestions: `#secondary-inner`,
   comments: `#comments, ytd-comments`,
-  endscreen: `.ytp-endscreen-content, .ytp-ce-element, .html5-endscreen,
-    .ytp-pause-overlay, .ytp-suggested-action`,
+  endscreen: `.ytp-endscreen-content, .ytp-ce-element, .ytp-pause-overlay`,
   subsbar: `ytd-guide-section-renderer:has(ytd-guide-entry-renderer a[href^="/@"]),
     ytd-guide-section-renderer:has(ytd-guide-entry-renderer a[href^="/channel/"]),
     ytd-guide-collapsible-entry-renderer`,
-  playlists: `ytd-playlist-panel-renderer, ytd-watch-flexy #playlist`,
-  chat: `#chat, ytd-live-chat-frame, #chat-container`
+  playlists: `ytd-watch-flexy ytd-playlist-panel-renderer`,
+  chat: `ytd-watch-flexy ytd-live-chat-frame`
 };
 
 const style = document.createElement('style');
@@ -36,14 +33,10 @@ mount();
 
 function css(s) {
   if (!s.on) return '';
-  const out = Object.keys(RULES)
+  return Object.keys(RULES)
     .filter(k => s[k])
-    .map(k => `${RULES[k]}{display:none!important}`);
-  // reclaim the space the sidebar leaves behind
-  if (s.suggestions) {
-    out.push(`#primary.ytd-watch-flexy{max-width:none!important;margin:0 auto!important}`);
-  }
-  return out.join('\n');
+    .map(k => `${RULES[k]}{display:none!important}`)
+    .join('\n');
 }
 
 function apply(s) {
@@ -67,4 +60,4 @@ chrome.storage.onChanged.addListener(c => {
 document.addEventListener('yt-navigate-finish', () => apply(current));
 new MutationObserver(() => {
   if (!style.isConnected) apply(current);
-}).observe(document.documentElement, { childList: true });
+}).observe(document.documentElement, { childList: true, subtree: true });
