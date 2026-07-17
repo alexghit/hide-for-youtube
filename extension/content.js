@@ -18,9 +18,10 @@ const RULES = {
   comments: `#comments, ytd-comments`,
   endscreen: `.ytp-endscreen-content, .ytp-ce-element, .html5-endscreen,
     .ytp-pause-overlay, .ytp-suggested-action`,
-  subsbar: `ytd-guide-section-renderer:nth-of-type(2),
-    ytd-guide-section-renderer:has(#guide-section-title)`,
-  playlists: `ytd-playlist-panel-renderer, #playlist`,
+  subsbar: `ytd-guide-section-renderer:has(ytd-guide-entry-renderer a[href^="/@"]),
+    ytd-guide-section-renderer:has(ytd-guide-entry-renderer a[href^="/channel/"]),
+    ytd-guide-collapsible-entry-renderer`,
+  playlists: `ytd-playlist-panel-renderer, ytd-watch-flexy #playlist`,
   chat: `#chat, ytd-live-chat-frame, #chat-container`
 };
 

@@ -43,7 +43,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .segs button[aria-pressed="true"]{background:rgba(255,255,255,.92);color:var(--bg)}
 
 
-.footer{flex-shrink:0;display:flex;flex-wrap:wrap;justify-content:center;
+.footer{flex-shrink:0;display:flex;justify-content:center;
   align-items:center;gap:8px;padding:28px 24px 32px;font-family:var(--mono);
   font-size:11px;letter-spacing:.04em;color:var(--faint);text-align:center}
 .footer a{color:var(--muted);text-decoration:none;
@@ -53,11 +53,6 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .footer .dot{opacity:.5}
 
 
-@media (max-width:600px){
-  .topbar{padding:24px 20px;font-size:11px}
-  .footer{flex-direction:column;gap:14px;padding:24px 20px 30px;line-height:1.5}
-  .footer .dot{display:none}
-}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
 
 /* tool rules */
@@ -114,7 +109,7 @@ body{width:340px}
 
 <footer class="footer">
   <span>Made with ♥ by Alex Ghit</span><span class="dot">·</span>
-  <a href="#" id="privacy">Privacy</a>
+  <a href="https://hide.hey5.studio" target="_blank" rel="noopener">Privacy</a>
   <span class="dot">·</span><span>v1.0</span>
 </footer>
 <script src="popup.js"></script>
