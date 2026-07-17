@@ -42,6 +42,8 @@ extension/   the unpacked extension
 site/        the landing page — hide.hey5.studio
 ```
 
+Unknown paths redirect to the homepage (`site/_redirects`).
+
 `popup.html` is the UI: the eight toggles and an on/off switch. `content.js` is
 the mechanism. They only talk through storage.
 
